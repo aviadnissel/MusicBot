@@ -1391,6 +1391,19 @@ class MusicBot(discord.Client):
         player.playlist.clear()
         return Response(':put_litter_in_its_place:', delete_after=20)
 
+    async def cmd_instaskip(self, player, channel, author, message, permissions, voice_channel):
+        if author.id == self.config.owner_id \
+                or permissions.instaskip \
+                or author == player.current_entry.meta.get('author', None):
+
+            player.skip()  # check autopause stuff here
+            await self._manual_delete_check(message)
+            return
+        else:
+            raise exceptions.PermissionsError(
+                "This command is not enabled for your group (%s)." % user_permissions.name,
+                expire_in=20)
+        
     async def cmd_skip(self, player, channel, author, message, permissions, voice_channel):
         """
         Usage:
@@ -1417,10 +1430,8 @@ class MusicBot(discord.Client):
                 print("Something strange is happening.  "
                       "You might want to restart the bot if it doesn't start working.")
 
-        if author.id == self.config.owner_id \
-                or permissions.instaskip \
-                or author == player.current_entry.meta.get('author', None):
-
+        if author == player.current_entry.meta.get('author', None):
+        
             player.skip()  # check autopause stuff here
             await self._manual_delete_check(message)
             return
