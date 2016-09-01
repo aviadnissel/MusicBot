@@ -842,6 +842,8 @@ class MusicBot(discord.Client):
         except:
             raise exceptions.CommandError('Invalid URL provided:\n{}\n'.format(server_link), expire_in=30)
 
+    async def cmd_delnext(self, player, channel, author):
+        player.playlist.entries.popleft()
     async def cmd_play(self, player, channel, author, permissions, leftover_args, song_url):
         """
         Usage:
