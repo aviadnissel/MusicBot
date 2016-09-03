@@ -2009,7 +2009,7 @@ class MusicBot(discord.Client):
         if not self.config.auto_pause:
             return
 
-        if sum(1 for m in my_voice_channel.voice_members if m != after.server.me):
+        if sum(1 for m in my_voice_channel.voice_members if m != after.server.me and not m.voice.deaf):
             if auto_paused and player.is_paused:
                 print("[config:autopause] Unpausing")
                 self.server_specific_data[after.server]['auto_paused'] = False
