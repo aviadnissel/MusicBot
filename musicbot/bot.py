@@ -1519,9 +1519,6 @@ class MusicBot(discord.Client):
                 raise exceptions.CommandError(
                     'Unreasonable volume provided: {}%. Provide a value between 1 and 100.'.format(new_volume), expire_in=20)
 
-    async def cmd_permaqueue(self, channel, player, length=999):
-        return self.cmd_queue(channel, player, length, True)
-
     async def cmd_queue(self, channel, player, length="999", perma=False):
         """
         Usage:
@@ -1529,7 +1526,6 @@ class MusicBot(discord.Client):
 
         Prints the current song queue up to <length> songs. Default length is 999.
         """
-
         lines = []
         unlisted = 0
         andmoretext = '* ... and %s more*' % ('x' * len(player.playlist.entries))
