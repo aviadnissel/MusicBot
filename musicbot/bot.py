@@ -1522,7 +1522,7 @@ class MusicBot(discord.Client):
     async def cmd_permaqueue(self, channel, player, length=999):
         return self.cmd_queue(channel, player, length, True)
 
-    async def cmd_queue(self, channel, player, length=999, perma=False):
+    async def cmd_queue(self, channel, player, length="999", perma=False):
         """
         Usage:
             {command_prefix}queue [length]
@@ -1546,7 +1546,7 @@ class MusicBot(discord.Client):
                 lines.append("Now Playing: **%s** %s\n" % (player.current_entry.title, prog_str))
 
         for i, item in enumerate(player.playlist, 1):
-            if i > length:
+            if i > int(length):
                 break
             if item.meta.get('channel', False) and item.meta.get('author', False):
                 nextline = '`{}.` **{}** added by **{}**'.format(i, item.title, item.meta['author'].name).strip()
