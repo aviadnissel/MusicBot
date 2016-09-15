@@ -1519,8 +1519,10 @@ class MusicBot(discord.Client):
                 raise exceptions.CommandError(
                     'Unreasonable volume provided: {}%. Provide a value between 1 and 100.'.format(new_volume), expire_in=20)
 
+    async def cmd_permaqueue(self, channel, player, length=999):
+        return self.cmd_queue(channel, player, length, True)
 
-    async def cmd_queue(self, channel, player, length=999):
+    async def cmd_queue(self, channel, player, length=999, perma=False):
         """
         Usage:
             {command_prefix}queue [length]
@@ -1568,7 +1570,10 @@ class MusicBot(discord.Client):
                 'There are no songs queued! Queue something with {}play.'.format(self.config.command_prefix))
 
         message = '\n'.join(lines)
-        return Response(message, delete_after=30)
+        delete_after = 30
+        if perma:
+            delete_after = 0
+        return Response(message, delete_after=delete_after)
 
     async def cmd_clean(self, message, channel, server, author, search_range=50):
         """
