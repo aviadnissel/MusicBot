@@ -1519,12 +1519,13 @@ class MusicBot(discord.Client):
                 raise exceptions.CommandError(
                     'Unreasonable volume provided: {}%. Provide a value between 1 and 100.'.format(new_volume), expire_in=20)
 
-    async def cmd_queue(self, channel, player):
+
+    async def cmd_queue(self, channel, player, length=999):
         """
         Usage:
-            {command_prefix}queue
+            {command_prefix}queue [length]
 
-        Prints the current song queue.
+        Prints the current song queue up to <length> songs. Default length is 999.
         """
 
         lines = []
@@ -1543,6 +1544,8 @@ class MusicBot(discord.Client):
                 lines.append("Now Playing: **%s** %s\n" % (player.current_entry.title, prog_str))
 
         for i, item in enumerate(player.playlist, 1):
+            if i > length:
+                break
             if item.meta.get('channel', False) and item.meta.get('author', False):
                 nextline = '`{}.` **{}** added by **{}**'.format(i, item.title, item.meta['author'].name).strip()
             else:
