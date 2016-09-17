@@ -200,8 +200,9 @@ class MusicPlayer(EventEmitter):
     async def _delete_file(self, filename):
         for x in range(30):
             try:
-                os.unlink(filename)
-                break
+                if os.path.exists(filename):
+                    os.unlink(filename)
+                    break
 
             except PermissionError as e:
                 if e.winerror == 32:  # File is in use
