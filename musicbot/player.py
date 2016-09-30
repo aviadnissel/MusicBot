@@ -313,7 +313,8 @@ class MusicPlayer(EventEmitter):
         while True:
             try:
                 volume_diff = int(subsocket.recv(1024))
-            except:
+            except Exception as e:
+                print e
                 subsocket, _ = self.socket.accept()
                 volume_diff = int(subsocket.recv(1024))
             new_volume = volume_diff + (self.volume * 100)
