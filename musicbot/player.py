@@ -312,7 +312,10 @@ class MusicPlayer(EventEmitter):
         print("Waiting for client")
         subsocket, _ = self.socket.accept()
         volume_diff = int(subsocket.recv(1024))
-        self.volume += volume_diff
+        new_volume = volume_diff + (self.volume * 100)
+
+        if 0 < new_volume <= 100:
+            self.volume += volume_diff
         print("Volume set to %d" % self.volume)
 
     @property
