@@ -184,6 +184,7 @@ class MusicBot(discord.Client):
                     if self.config.debug_mode:
                         traceback.print_exc()
                     print("Failed to join", channel.name)
+                    print(e)
 
             elif channel:
                 print("Not joining %s on %s, that's a text channel." % (channel.name, channel.server.name))
