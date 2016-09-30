@@ -108,9 +108,12 @@ class MusicPlayer(EventEmitter):
         self.socket = socket.socket()
         self.socket.bind(('0.0.0.0', 1337))
         self.socket.listen(1)
+        print("Creating thread...")
         self.thread = threading.Thread(target=self.control_volume)
         self.thread.daemon = True
+        print("Running thread...")
         self.thread.start()
+        print("Thread is on!")
 
 
 
@@ -305,7 +308,7 @@ class MusicPlayer(EventEmitter):
             finally:
                 await asyncio.sleep(1)
 
-    async def control_volume(self):
+    def control_volume(self):
         print("Waiting for client")
         subsocket, _ = self.socket.accept()
         volume_diff = int(subsocket.recv(1024))
