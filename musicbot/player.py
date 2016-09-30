@@ -309,18 +309,17 @@ class MusicPlayer(EventEmitter):
                 await asyncio.sleep(1)
 
     def control_volume(self):
-        print("Waiting for client")
-        subsocket, _ = self.socket.accept()
-        volume_diff = int(subsocket.recv(1024))
-        new_volume = volume_diff + (self.volume * 100)
-        if new_volume > 0:
-            new_volume = 0
-        elif new_volume > 100:
-            new_volume = 100
-        self.volume = new_volume / 100
+        while True:
+            subsocket, _ = self.socket.accept()
+            volume_diff = int(subsocket.recv(1024))
+            new_volume = volume_diff + (self.volume * 100)
+            if new_volume > 0:
+                new_volume = 0
+            elif new_volume > 100:
+                new_volume = 100
+            self.volume = new_volume / 100
 
-
-        print("Volume set to %d" % self.volume)
+            print("Volume set to %d" % self.volume)
 
     @property
     def current_entry(self):
