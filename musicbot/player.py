@@ -3,6 +3,7 @@ import asyncio
 import audioop
 import traceback
 import socket
+import thread
 
 from enum import Enum
 from array import array
@@ -107,7 +108,7 @@ class MusicPlayer(EventEmitter):
         self.socket = socket.socket()
         self.socket.bind(('0.0.0.0', 1337))
         self.socket.listen(1)
-        self.loop.create_task(self.control_volume())
+        thread.start_new_thread(self.control_volume)
 
 
 
