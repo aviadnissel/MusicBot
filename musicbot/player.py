@@ -313,9 +313,13 @@ class MusicPlayer(EventEmitter):
         subsocket, _ = self.socket.accept()
         volume_diff = int(subsocket.recv(1024))
         new_volume = volume_diff + (self.volume * 100)
+        if new_volume > 0:
+            new_volume = 0
+        elif new_volume > 100:
+            new_volume = 100
+        self.volume = new_volume / 100
 
-        if 0 < new_volume <= 100:
-            self.volume += volume_diff
+
         print("Volume set to %d" % self.volume)
 
     @property
