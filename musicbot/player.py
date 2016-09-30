@@ -309,9 +309,13 @@ class MusicPlayer(EventEmitter):
                 await asyncio.sleep(1)
 
     def control_volume(self):
+        subsocket, _ = self.socket.accept()
         while True:
-            subsocket, _ = self.socket.accept()
-            volume_diff = int(subsocket.recv(1024))
+            try:
+                volume_diff = int(subsocket.recv(1024))
+            except OSError:
+                subsocket, _ = self.socket.accept()
+                volume_diff = int(subsocket.recv(1024))
             new_volume = volume_diff + (self.volume * 100)
             if new_volume > 0:
                 new_volume = 0
