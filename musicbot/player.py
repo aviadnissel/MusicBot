@@ -310,6 +310,8 @@ class MusicPlayer(EventEmitter):
         while True:
             try:
                 val = subsocket.recv(1024)
+                if not val:
+                    raise OSError("Connection lost")
             except Exception as e:
                 print(e)
                 subsocket, _ = self.socket.accept()
