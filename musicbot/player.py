@@ -324,7 +324,7 @@ class MusicPlayer(EventEmitter):
                 new_volume = 100
             self.volume = new_volume / 100
 
-            print("Volume set to %d" % self.volume)
+            print("Volume set to %d" % new_volume)
 
     @property
     def current_entry(self):
