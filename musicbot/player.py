@@ -3,7 +3,7 @@ import asyncio
 import audioop
 import traceback
 import socket
-import thread
+import threading
 
 from enum import Enum
 from array import array
@@ -108,7 +108,9 @@ class MusicPlayer(EventEmitter):
         self.socket = socket.socket()
         self.socket.bind(('0.0.0.0', 1337))
         self.socket.listen(1)
-        thread.start_new_thread(self.control_volume)
+        self.thread = threading.Thread(target=self.control_volume)
+        self.thread.daemon = True
+        self.thread.start()
 
 
 
@@ -304,10 +306,11 @@ class MusicPlayer(EventEmitter):
                 await asyncio.sleep(1)
 
     async def control_volume(self):
+        print("Waiting for client")
         subsocket, _ = self.socket.accept()
         volume_diff = int(subsocket.recv(1024))
         self.volume += volume_diff
-        await asyncio.sleep(1)
+        print("Volume set to %d" % self.volume)
 
     @property
     def current_entry(self):
