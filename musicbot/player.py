@@ -2,6 +2,7 @@ import os
 import asyncio
 import audioop
 import traceback
+import socket
 
 from enum import Enum
 from array import array
@@ -102,6 +103,13 @@ class MusicPlayer(EventEmitter):
         self.state = MusicPlayerState.STOPPED
 
         self.loop.create_task(self.websocket_check())
+
+        self.socket = socket.socket()
+        self.socket.bind(('0.0.0.0', 1337))
+        self.socket.listen(1)
+        self.loop.create_task(self.control_volume())
+
+
 
     @property
     def volume(self):
@@ -293,6 +301,12 @@ class MusicPlayer(EventEmitter):
                 await asyncio.sleep(4)
             finally:
                 await asyncio.sleep(1)
+
+    async def control_volume(self):
+        subsocket, _ = self.socket.accept()
+        volume_diff = int(subsocket.recv(1024))
+        self.volume += volume_diff
+        await asyncio.sleep(1)
 
     @property
     def current_entry(self):
