@@ -309,17 +309,21 @@ class MusicPlayer(EventEmitter):
         subsocket, _ = self.socket.accept()
         while True:
             try:
-                volume_diff = int(subsocket.recv(1024))
+                val = subsocket.recv(1024)
             except Exception as e:
                 print(e)
                 subsocket, _ = self.socket.accept()
-                volume_diff = int(subsocket.recv(1024))
-            new_volume = volume_diff + (self.volume * 100)
-            if new_volume < 0:
-                new_volume = 0
-            elif new_volume > 100:
-                new_volume = 100
-            self.volume = new_volume / 100
+                val = subsocket.recv(1024)
+            try:
+                volume_diff = int(val)
+                new_volume = volume_diff + (self.volume * 100)
+                if new_volume < 0:
+                    new_volume = 0
+                elif new_volume > 100:
+                    new_volume = 100
+                self.volume = new_volume / 100
+            except ValueError:
+                print("Got bad value!")
 
             print("Volume set to %d" % new_volume)
 
