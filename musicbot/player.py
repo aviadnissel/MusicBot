@@ -108,12 +108,9 @@ class MusicPlayer(EventEmitter):
         self.socket = socket.socket()
         self.socket.bind(('0.0.0.0', 1337))
         self.socket.listen(1)
-        print("Creating thread...")
         self.thread = threading.Thread(target=self.control_volume)
         self.thread.daemon = True
-        print("Running thread...")
         self.thread.start()
-        print("Thread is on!")
 
 
 
