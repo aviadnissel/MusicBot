@@ -327,7 +327,6 @@ class MusicPlayer(EventEmitter):
             except ValueError:
                 print("Got bad value!")
 
-            print("Volume set to %d" % new_volume)
 
     @property
     def current_entry(self):
