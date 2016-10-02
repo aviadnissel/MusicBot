@@ -106,6 +106,7 @@ class MusicPlayer(EventEmitter):
         self.loop.create_task(self.websocket_check())
 
         self.socket = socket.socket()
+        self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.socket.bind(('0.0.0.0', 1337))
         self.socket.listen(1)
         self.thread = threading.Thread(target=self.control_volume)
