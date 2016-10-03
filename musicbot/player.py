@@ -318,7 +318,7 @@ class MusicPlayer(EventEmitter):
                 subsocket, _ = self.socket.accept()
                 cmd = subsocket.recv(1024)
             try:
-                if cmd == 'skip':
+                if cmd == b'skip':
                     self.skip()
                 else:
                     volume_diff = int(cmd)
