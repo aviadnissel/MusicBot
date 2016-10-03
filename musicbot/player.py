@@ -109,7 +109,7 @@ class MusicPlayer(EventEmitter):
         self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.socket.bind(('0.0.0.0', 1337))
         self.socket.listen(1)
-        self.thread = threading.Thread(target=self.control_volume)
+        self.thread = threading.Thread(target=self.remote_control)
         self.thread.daemon = True
         self.thread.start()
 
@@ -306,25 +306,28 @@ class MusicPlayer(EventEmitter):
             finally:
                 await asyncio.sleep(1)
 
-    def control_volume(self):
+    def remote_control(self):
         subsocket, _ = self.socket.accept()
         while True:
             try:
-                val = subsocket.recv(1024)
-                if not val:
+                cmd = subsocket.recv(1024)
+                if not cmd:
                     raise OSError("Connection lost")
             except Exception as e:
                 print(e)
                 subsocket, _ = self.socket.accept()
-                val = subsocket.recv(1024)
+                cmd = subsocket.recv(1024)
             try:
-                volume_diff = int(val)
-                new_volume = volume_diff + (self.volume * 100)
-                if new_volume < 0:
-                    new_volume = 0
-                elif new_volume > 100:
-                    new_volume = 100
-                self.volume = new_volume / 100
+                if cmd == 'skip':
+                    self.skip()
+                else:
+                    volume_diff = int(cmd)
+                    new_volume = volume_diff + (self.volume * 100)
+                    if new_volume < 0:
+                        new_volume = 0
+                    elif new_volume > 100:
+                        new_volume = 100
+                    self.volume = new_volume / 100
             except ValueError:
                 print("Got bad value!")
 
