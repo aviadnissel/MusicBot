@@ -332,6 +332,7 @@ class MusicPlayer(EventEmitter):
             except Exception as e:
                 print(e)
             finally:
+                self.socket.close()
                 subsocket.close()
                 self.socket = self.create_socket()
 
