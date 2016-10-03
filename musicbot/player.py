@@ -105,10 +105,7 @@ class MusicPlayer(EventEmitter):
 
         self.loop.create_task(self.websocket_check())
 
-        self.socket = socket.socket()
-        self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        self.socket.bind(('0.0.0.0', 1337))
-        self.socket.listen(1)
+        self.socket = self.create_socket()
         self.thread = threading.Thread(target=self.remote_control)
         self.thread.daemon = True
         self.thread.start()
@@ -306,20 +303,24 @@ class MusicPlayer(EventEmitter):
             finally:
                 await asyncio.sleep(1)
 
+    def create_socket(self):
+        s = socket.socket()
+        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        s.bind(('0.0.0.0', 1337))
+        s.listen(1)
+        return s
+
     def remote_control(self):
-        subsocket, _ = self.socket.accept()
         while True:
+            subsocket, _ = self.socket.accept()
             try:
                 cmd = subsocket.recv(1024)
                 if not cmd:
                     raise OSError("Connection lost")
-            except Exception as e:
-                print(e)
-                subsocket, _ = self.socket.accept()
-                cmd = subsocket.recv(1024)
-            try:
                 if cmd == b'skip':
                     self.skip()
+                elif cmd == b'song':
+                    subsocket.send(bytes(self._current_entry.title, 'utf8'))
                 else:
                     volume_diff = int(cmd)
                     new_volume = volume_diff + (self.volume * 100)
@@ -328,9 +329,11 @@ class MusicPlayer(EventEmitter):
                     elif new_volume > 100:
                         new_volume = 100
                     self.volume = new_volume / 100
-            except ValueError:
-                print("Got bad value!")
-
+            except Exception as e:
+                print(e)
+            finally:
+                subsocket.close()
+                self.socket = self.create_socket()
 
     @property
     def current_entry(self):
