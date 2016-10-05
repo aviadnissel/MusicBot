@@ -391,7 +391,7 @@ class WebControl(object):
             song_dict = WebControl.get_song_metadata(self.player.current_entry)
             song_dict['progress'] = self.player.progress
         else:
-            return {'title': None, 'requestedBy': None, 'duration': 0, 'progress': 0}
+            song_dict = {'title': None, 'requestedBy': None, 'duration': 0, 'progress': 0}
         return json.dumps(song_dict)
 
     def volume(self):
