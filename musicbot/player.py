@@ -379,6 +379,8 @@ class WebControl(object):
         self.player = player
         self.app = Flask(__name__)
         self.app.add_url_rule('/api/current_song', view_func=self.current_song)
+        self.app.add_url_rule('/api/volume', view_func=self.volume, methods=['GET'])
+        self.app.add_url_rule('/api/volume/<int:new_volume>', view_func=self.volume, methods=['POST'])
 
     def run(self):
         self.app.run('0.0.0.0', port=8080)
@@ -397,6 +399,11 @@ class WebControl(object):
             duration = self.player.current_entry.duration
         return json.dumps({'title': title, 'requestedBy': requested_by, 'duration': duration, 'progress': progress})
 
+    def volume(self):
+        return json.dumps(self.player.volume)
+
+    def set_volume(self, new_volume):
+        self.player.volume = int(new_volume)
 
 # if redistributing ffmpeg is an issue, it can be downloaded from here:
 #  - http://ffmpeg.zeranoe.com/builds/win32/static/ffmpeg-latest-win32-static.7z
