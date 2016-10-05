@@ -4,7 +4,9 @@ import audioop
 import traceback
 import socket
 import threading
+import json
 
+from flask import Flask
 from enum import Enum
 from array import array
 from collections import deque
@@ -110,6 +112,9 @@ class MusicPlayer(EventEmitter):
         self.thread.daemon = True
         self.thread.start()
 
+        self.web_thread = threading.Thread(target=self.create_webcontrol)
+        self.web_thread.daemon = True
+        self.web_thread.start()
 
 
     @property
@@ -336,6 +341,10 @@ class MusicPlayer(EventEmitter):
                 subsocket.close()
                 self.socket = self.create_socket()
 
+    def create_webcontrol(self):
+        webcontrol = WebControl(self)
+        webcontrol.run()
+
     @property
     def current_entry(self):
         return self._current_entry
@@ -363,6 +372,20 @@ class MusicPlayer(EventEmitter):
         #       Correct calculation should be bytes_read/192k
         #       192k AKA sampleRate * (bitDepth / 8) * channelCount
         #       Change frame_count to bytes_read in the PatchedBuff
+
+
+class WebControl(object):
+    def __init__(self, player):
+        self.player = player
+        self.app = Flask(__name__)
+        self.app.add_url_rule('/api/current_song', view_func=self.current_song)
+
+    def run(self):
+        self.app.run()
+
+    def current_song(self):
+        song = "OMG it's a song"
+        return json.dumps(song)
 
 
 # if redistributing ffmpeg is an issue, it can be downloaded from here:
