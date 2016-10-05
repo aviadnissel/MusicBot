@@ -390,8 +390,10 @@ class WebControl(object):
         duration = 0
         if self.player.current_entry:
             title = self.player.current_entry.title
-            requested_by = self.player.current_entry.meta['author'].name
-            song_progress = self.player.progress
+            author = self.player.current_entry.meta['author']
+            if author is not None:
+                requested_by = self.player.current_entry.meta['author'].name
+            progress = self.player.progress
             duration = self.player.current_entry.duration
         return json.dumps({'title': title, 'requestedBy': requested_by, 'duration': duration, 'progress': progress})
 
