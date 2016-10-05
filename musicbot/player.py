@@ -381,7 +381,7 @@ class WebControl(object):
         self.app.add_url_rule('/api/current_song', view_func=self.current_song)
 
     def run(self):
-        self.app.run()
+        self.app.run('0.0.0.0', port=8080)
 
     def current_song(self):
         song = "OMG it's a song"
