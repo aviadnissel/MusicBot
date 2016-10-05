@@ -384,8 +384,16 @@ class WebControl(object):
         self.app.run('0.0.0.0', port=8080)
 
     def current_song(self):
-        song = "OMG it's a song"
-        return json.dumps(song)
+        title = None
+        requested_by = None
+        progress = 0
+        duration = 0
+        if self.player.current_entry:
+            title = self.player.current_entry.title
+            requested_by = self.player.current_entry.meta['author'].name
+            song_progress = self.player.progress
+            duration = self.player.current_entry.duration
+        return json.dumps({'title': title, 'requestedBy': requested_by, 'duration': duration, 'progress': progress})
 
 
 # if redistributing ffmpeg is an issue, it can be downloaded from here:
