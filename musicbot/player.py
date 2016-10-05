@@ -382,6 +382,7 @@ class WebControl(object):
         self.app.add_url_rule('/api/volume', view_func=self.volume, methods=['GET'])
         self.app.add_url_rule('/api/volume/<float:new_volume>', view_func=self.set_volume, methods=['POST'])
         self.app.add_url_rule('/api/queue', view_func=self.queue)
+        self.app.add_url_rule('/api/skip', view_func=self.skip)
 
     def run(self):
         self.app.run('0.0.0.0', port=8080)
@@ -406,6 +407,9 @@ class WebControl(object):
         queue = [WebControl.get_song_metadata(entry) for entry in self.player.playlist]
         return json.dumps(queue)
 
+    def skip(self):
+        self.player.skip()
+        return None
 
     @staticmethod
     def get_song_metadata(entry):
