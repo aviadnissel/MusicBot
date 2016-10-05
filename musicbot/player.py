@@ -407,6 +407,8 @@ class WebControl(object):
         author = entry.meta['author']
         if author is not None:
             requested_by = entry.meta['author'].name
+        else:
+            requested_by = None
         duration = entry.duration
         return {'title': title, 'requestedBy': requested_by, 'duration': duration}
 
