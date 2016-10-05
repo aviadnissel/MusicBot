@@ -404,7 +404,7 @@ class WebControl(object):
 
     def set_volume(self, new_volume):
         self.player.volume = new_volume
-        return self.player.volume
+        return str(self.player.volume)
 
 # if redistributing ffmpeg is an issue, it can be downloaded from here:
 #  - http://ffmpeg.zeranoe.com/builds/win32/static/ffmpeg-latest-win32-static.7z
