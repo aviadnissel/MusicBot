@@ -386,18 +386,13 @@ class WebControl(object):
         self.app.run('0.0.0.0', port=8080)
 
     def current_song(self):
-        title = None
-        requested_by = None
-        progress = 0
-        duration = 0
+        song_dict = {}
         if self.player.current_entry:
-            title = self.player.current_entry.title
-            author = self.player.current_entry.meta['author']
-            if author is not None:
-                requested_by = self.player.current_entry.meta['author'].name
-            progress = self.player.progress
-            duration = self.player.current_entry.duration
-        return json.dumps({'title': title, 'requestedBy': requested_by, 'duration': duration, 'progress': progress})
+            song_dict = WebControl.get_song_metadata(self.player.current_entry)
+            song_dict['progress'] = self.player.progress
+        else:
+            return {'title': None, 'requestedBy': None, 'duration': 0, 'progress': 0}
+        return song_dict
 
     def volume(self):
         return json.dumps(self.player.volume)
@@ -405,6 +400,15 @@ class WebControl(object):
     def set_volume(self, new_volume):
         self.player.volume = new_volume
         return str(self.player.volume)
+
+    @staticmethod
+    def get_song_metadata(entry):
+        title = entry.title
+        author = entry.meta['author']
+        if author is not None:
+            requested_by = entry.meta['author'].name
+        duration = entry.duration
+        return {'title': title, 'requestedBy': requested_by, 'duration': duration}
 
 # if redistributing ffmpeg is an issue, it can be downloaded from here:
 #  - http://ffmpeg.zeranoe.com/builds/win32/static/ffmpeg-latest-win32-static.7z
