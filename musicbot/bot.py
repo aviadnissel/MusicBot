@@ -370,10 +370,12 @@ class MusicBot(discord.Client):
 
             playlist = Playlist(self)
             if os.path.isfile("queue.txt"):
+                print("Existing queue found")
                 with open("queue.txt", "rb") as f:
                     queue = f.readlines()
+                    print(queue)
                     for url in queue:
-                        playlist.add_entry(str(url))
+                        await playlist.add_entry(str(url))
 
             player = MusicPlayer(self, voice_client, playlist) \
                 .on('play', self.on_player_play) \
