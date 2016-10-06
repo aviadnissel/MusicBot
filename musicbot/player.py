@@ -5,6 +5,7 @@ import traceback
 import socket
 import threading
 import json
+import re
 
 from flask import Flask
 from enum import Enum
@@ -388,12 +389,12 @@ class WebControl(object):
         self.app.run('0.0.0.0', port=8080)
 
     def current_song(self):
-        song_dict = {}
         if self.player.current_entry:
             song_dict = WebControl.get_song_metadata(self.player.current_entry)
             song_dict['progress'] = self.player.progress
+            song_dict['thumbnail'] = WebControl.extract_thumbnail(self.player.current_entry.url)
         else:
-            song_dict = {'title': None, 'requestedBy': None, 'duration': 0, 'progress': 0}
+            song_dict = {'title': None, 'requestedBy': None, 'duration': 0, 'progress': 0, 'thumbnail': None}
         return json.dumps(song_dict)
 
     def volume(self):
@@ -421,6 +422,16 @@ class WebControl(object):
             requested_by = None
         duration = entry.duration
         return {'title': title, 'requestedBy': requested_by, 'duration': duration}
+
+    @staticmethod
+    def extract_thumbnail(url):
+        re_find = re.findall('youtube\.com/watch\?v=(.*?)($|&)', url)
+        if re_find:
+            video_id = re_find[0][0]
+            thumbnail = 'http://img.youtube.com/vi/{}/0.jpg'.format(video_id)
+            return thumbnail
+        return None
+
 
 # if redistributing ffmpeg is an issue, it can be downloaded from here:
 #  - http://ffmpeg.zeranoe.com/builds/win32/static/ffmpeg-latest-win32-static.7z
