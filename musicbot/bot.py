@@ -544,7 +544,7 @@ class MusicBot(discord.Client):
         if os.path.isfile("/tmp/queue.txt"):
             print("Existing queue found")
             with open("/tmp/queue.txt", "rb") as f:
-                queue = f.readlines()
+                queue = [str(s).replace("\n", "") for s in f.readlines()]
                 print(queue)
                 for url in queue:
                     await playlist.add_entry(str(url))
