@@ -369,6 +369,12 @@ class MusicBot(discord.Client):
             voice_client = await self.get_voice_client(channel)
 
             playlist = Playlist(self)
+            if os.isfile("queue.txt"):
+                with open("queue.txt", "rb") as f:
+                    queue = f.readlines()
+                    for url in queue:
+                        playlist.add_entry(str(url))
+
             player = MusicPlayer(self, voice_client, playlist) \
                 .on('play', self.on_player_play) \
                 .on('resume', self.on_player_resume) \
