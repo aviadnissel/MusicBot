@@ -292,7 +292,7 @@ class MusicPlayer(EventEmitter):
     def backup_queue(self):
         queue = [bytes(entry.url, 'utf8') for entry in self.playlist]
         with open('/tmp/queue.txt', 'wb') as f:
-            f.write('\n'.join(queue))
+            f.write(b'\n'.join(queue))
 
     def reload_voice(self, voice_client):
         self.voice_client = voice_client
