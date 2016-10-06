@@ -543,7 +543,7 @@ class MusicBot(discord.Client):
         print("Reloading queue")
         if os.path.isfile("/tmp/queue.txt"):
             print("Existing queue found")
-            with open("queue.txt", "rb") as f:
+            with open("/tmp/queue.txt", "rb") as f:
                 queue = f.readlines()
                 print(queue)
                 for url in queue:
