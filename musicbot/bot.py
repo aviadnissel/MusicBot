@@ -369,13 +369,7 @@ class MusicBot(discord.Client):
             voice_client = await self.get_voice_client(channel)
 
             playlist = Playlist(self)
-            if os.path.isfile("/tmp/queue.txt"):
-                print("Existing queue found")
-                with open("queue.txt", "rb") as f:
-                    queue = f.readlines()
-                    print(queue)
-                    for url in queue:
-                        await playlist.add_entry(str(url))
+            await self.reload_queue(playlist)
 
             player = MusicPlayer(self, voice_client, playlist) \
                 .on('play', self.on_player_play) \
@@ -544,6 +538,16 @@ class MusicBot(discord.Client):
             return await super().edit_profile(**fields)
         else:
             return await super().edit_profile(self.config._password,**fields)
+
+    async def reload_queue(self, playlist):
+        print "Reloading queue"
+        if os.path.isfile("/tmp/queue.txt"):
+            print("Existing queue found")
+            with open("queue.txt", "rb") as f:
+                queue = f.readlines()
+                print(queue)
+                for url in queue:
+                    await playlist.add_entry(str(url))
 
     def _cleanup(self):
         try:
