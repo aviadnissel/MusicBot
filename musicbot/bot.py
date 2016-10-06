@@ -369,7 +369,7 @@ class MusicBot(discord.Client):
             voice_client = await self.get_voice_client(channel)
 
             playlist = Playlist(self)
-            if os.isfile("queue.txt"):
+            if os.path.isfile("queue.txt"):
                 with open("queue.txt", "rb") as f:
                     queue = f.readlines()
                     for url in queue:
