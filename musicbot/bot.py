@@ -1044,6 +1044,8 @@ class MusicBot(discord.Client):
 
             reply_text %= (btext, position, time_until)
 
+        player.backup_queue()
+
         return Response(reply_text, delete_after=30)
 
     async def _cmd_play_playlist_async(self, player, channel, author, permissions, playlist_url, extractor_type):

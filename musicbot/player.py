@@ -278,6 +278,9 @@ class MusicPlayer(EventEmitter):
                 self.state = MusicPlayerState.PLAYING
                 self._current_entry = entry
 
+                # Backing up the queue
+                self.backup_queue()
+
                 self._current_player.start()
                 self.emit('play', player=self, entry=entry)
 
@@ -285,6 +288,10 @@ class MusicPlayer(EventEmitter):
         original_buff = player.buff
         player.buff = PatchedBuff(original_buff)
         return player
+
+    def backup_queue(self):
+        queue = [entry.url for entry in self.playlist]
+        open('queue.txt', 'wb').write('\n'.join(queue))
 
     def reload_voice(self, voice_client):
         self.voice_client = voice_client
