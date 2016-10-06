@@ -234,10 +234,16 @@ class MusicBot(discord.Client):
             _voice_data = self.ws.wait_for('VOICE_SERVER_UPDATE', lambda d: True)
 
             await self.ws.voice_state(server.id, channel.id)
+            while True:
+                try:
+                    s_id_data = await asyncio.wait_for(s_id, timeout=10, loop=self.loop)
+                    voice_data = await asyncio.wait_for(_voice_data, timeout=10, loop=self.loop)
+                    session_id = s_id_data.get('session_id')
+                    break
+                except:
+                    print("Exception!")
 
-            s_id_data = await asyncio.wait_for(s_id, timeout=10, loop=self.loop)
-            voice_data = await asyncio.wait_for(_voice_data, timeout=10, loop=self.loop)
-            session_id = s_id_data.get('session_id')
+         
 
             kwargs = {
                 'user': self.user,
