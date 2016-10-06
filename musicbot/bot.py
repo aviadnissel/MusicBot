@@ -540,7 +540,7 @@ class MusicBot(discord.Client):
             return await super().edit_profile(self.config._password,**fields)
 
     async def reload_queue(self, playlist):
-        print "Reloading queue"
+        print("Reloading queue")
         if os.path.isfile("/tmp/queue.txt"):
             print("Existing queue found")
             with open("queue.txt", "rb") as f:
