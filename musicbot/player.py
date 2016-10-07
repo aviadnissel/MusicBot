@@ -392,6 +392,7 @@ class WebControl(object):
         self.app.add_url_rule('/api/volume/<float:new_volume>', view_func=self.set_volume, methods=['POST'])
         self.app.add_url_rule('/api/queue', view_func=self.queue)
         self.app.add_url_rule('/api/skip', view_func=self.skip, methods=['POST'])
+        self.app.add_url_rule('/api/remove/<int:position>', view_func=self.remove, methods=['POST'])
 
     def run(self):
         self.app.run('0.0.0.0', port=8080)
@@ -418,6 +419,11 @@ class WebControl(object):
 
     def skip(self):
         self.player.skip()
+        return ''
+
+    def remove(self, position):
+        self.player.playlist.remove_song(position)
+        self.player.backup_queue()
         return ''
 
     @staticmethod
