@@ -248,7 +248,7 @@ class Playlist(EventEmitter):
         if not self.entries:
             return None
         if position == 0:
-            return self.get_next_entry()
+            return await self.get_next_entry()
         if position > len(self.entries):
             return None
         entry = self.entries[position]
