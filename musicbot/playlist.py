@@ -244,6 +244,15 @@ class Playlist(EventEmitter):
 
         return await entry.get_ready_future()
 
+    async def remove_song(self, position):
+        if not self.entries:
+            return None
+        if position == 0:
+            return self.get_next_entry()
+        entry = self.entries[position]
+        self.entries = deque([s for i, s in enumerate(self.entries) if i != position])
+        return entry
+
     def peek(self):
         """
             Returns the next entry that should be scheduled to be played.
