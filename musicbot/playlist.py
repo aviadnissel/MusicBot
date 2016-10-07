@@ -249,6 +249,8 @@ class Playlist(EventEmitter):
             return None
         if position == 0:
             return self.get_next_entry()
+        if position > len(self.entries):
+            return None
         entry = self.entries[position]
         self.entries = deque([s for i, s in enumerate(self.entries) if i != position])
         return entry
