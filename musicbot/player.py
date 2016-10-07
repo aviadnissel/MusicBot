@@ -423,8 +423,7 @@ class WebControl(object):
     @staticmethod
     def get_song_metadata(entry):
         title = entry.title
-        author = entry.meta['author']
-        if author is not None:
+        if 'author' in entry.meta:
             requested_by = entry.meta['author'].name
         else:
             requested_by = None
