@@ -862,8 +862,8 @@ class MusicBot(discord.Client):
         except:
             raise exceptions.CommandError('Invalid URL provided:\n{}\n'.format(server_link), expire_in=30)
 
-    async def cmd_skipnext(self, player, channel, author, position=0):
-        skipped_entry = await player.playlist.remove_song(int(position))
+    async def cmd_skipnext(self, player, channel, author, position=1):
+        skipped_entry = await player.playlist.remove_song(int(position) - 1)
         player.backup_queue()
         return Response('The song `%s` removed from queue' % skipped_entry.title, reply=False, delete_after=20)
 
