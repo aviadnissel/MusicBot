@@ -422,7 +422,7 @@ class WebControl(object):
         return ''
 
     def remove(self, position):
-        self.player.playlist.remove_song(position - 1)
+        self.player.loop.create_task(self.player.playlist.remove_song(position - 1))
         self.player.backup_queue()
         return ''
 
