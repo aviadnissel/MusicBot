@@ -2,10 +2,10 @@ import os
 import asyncio
 import audioop
 import traceback
-import socket
 import threading
 import json
 import re
+import logging
 
 from flask import Flask
 from enum import Enum
@@ -107,11 +107,6 @@ class MusicPlayer(EventEmitter):
         self.state = MusicPlayerState.STOPPED
 
         self.loop.create_task(self.websocket_check())
-
-        self.socket = self.create_socket()
-        self.thread = threading.Thread(target=self.remote_control)
-        self.thread.daemon = True
-        self.thread.start()
 
         self.web_thread = threading.Thread(target=self.create_webcontrol)
         self.web_thread.daemon = True
@@ -317,39 +312,6 @@ class MusicPlayer(EventEmitter):
             finally:
                 await asyncio.sleep(1)
 
-    def create_socket(self):
-        s = socket.socket()
-        s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-        s.bind(('0.0.0.0', 1337))
-        s.listen(1)
-        return s
-
-    def remote_control(self):
-        while True:
-            subsocket, _ = self.socket.accept()
-            try:
-                cmd = subsocket.recv(1024)
-                if not cmd:
-                    raise OSError("Connection lost")
-                if cmd == b'skip':
-                    self.skip()
-                elif cmd == b'song':
-                    subsocket.send(bytes(self._current_entry.title, 'utf8'))
-                else:
-                    volume_diff = int(cmd)
-                    new_volume = volume_diff + (self.volume * 100)
-                    if new_volume < 0:
-                        new_volume = 0
-                    elif new_volume > 100:
-                        new_volume = 100
-                    self.volume = new_volume / 100
-            except Exception as e:
-                print(e)
-            finally:
-                self.socket.close()
-                subsocket.close()
-                self.socket = self.create_socket()
-
     def create_webcontrol(self):
         webcontrol = WebControl(self)
         webcontrol.run()
@@ -387,6 +349,7 @@ class WebControl(object):
     def __init__(self, player):
         self.player = player
         self.app = Flask(__name__)
+        self.app.logging.setLevel(logging.ERROR)
         self.app.add_url_rule('/api/current_song', view_func=self.current_song)
         self.app.add_url_rule('/api/volume', view_func=self.volume, methods=['GET'])
         self.app.add_url_rule('/api/volume/<float:new_volume>', view_func=self.set_volume, methods=['POST'])
