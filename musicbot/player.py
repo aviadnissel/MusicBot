@@ -349,7 +349,7 @@ class WebControl(object):
     def __init__(self, player):
         self.player = player
         self.app = Flask(__name__)
-        self.app.logging.setLevel(logging.ERROR)
+        self.app.logger.setLevel(logging.ERROR)
         self.app.add_url_rule('/api/current_song', view_func=self.current_song)
         self.app.add_url_rule('/api/volume', view_func=self.volume, methods=['GET'])
         self.app.add_url_rule('/api/volume/<float:new_volume>', view_func=self.set_volume, methods=['POST'])
