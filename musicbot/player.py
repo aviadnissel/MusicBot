@@ -383,7 +383,7 @@ class WebControl(object):
 
     def pretty_queue(self):
         queue = [WebControl.get_song_metadata(entry) for entry in self.player.playlist]
-        return " ".join([str(s[0] + 1) + '.' + s[1]['title'] for s in queue])
+        return " ".join([str(s[0] + 1) + '.' + s[1]['title'] for s in enumerate(queue)])
 
     def skip(self):
         self.player.skip()
